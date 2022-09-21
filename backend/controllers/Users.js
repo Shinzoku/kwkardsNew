@@ -5,16 +5,64 @@ import jwt from "jsonwebtoken";
 // Get users all
 export const getUsers = async(req, res) => {
     try {
-        const users = await User.findAll({
-            attributes:['id','pseudo','email']
-        });
-        res.json(users);
+        const users = await User.findAll();
+        res.status(200).json(users);
     } catch (error) {
-        console.log(error);
+        console.log(error.message);
     }
 }
 
-// Account creation
+// Get one user
+export const getUserById = async(req, res) => {
+    try {
+        const user = await User.findOne({
+            where:{
+                id: req.params.id
+            }
+        });
+        res.status(200).json(user);
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+// Update user
+export const updateUser = async(req, res) => {
+    const {  pseudo, email, password, confPassword } = req.body;
+    if(password !== confPassword) return res.status(400).json({msg: "Password and Confirm Password do not match"});
+    const salt = await bcrypt.genSalt();
+    const hashPassword = await bcrypt.hash(password, salt);
+    try {
+        await User.update({
+            pseudo: pseudo,
+            email: email,
+            password: hashPassword
+        }, {
+            where:{
+                id: req.params.id
+            }
+        });
+        res.status(200).json({msg: "User Updated Successfuly"})
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+// Delete user
+export const deleteUser = async(req, res) => {
+    try {
+        await User.destroy({
+            where:{
+                id: req.params.id
+            }
+        });
+        res.status(200).json({msg: "User Deleted Successfuly"});
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+// User creation
 export const Register = async(req, res) => {
     const { pseudo, email, password, confPassword } = req.body;
     if(password !== confPassword) return res.status(400).json({msg: "Password and Confirm Password do not match"});
@@ -26,9 +74,9 @@ export const Register = async(req, res) => {
             email: email,
             password: hashPassword
         });
-        res.json({msg: "Registration Successful"});
+        res.status(201).json({msg: "Registration Successful"});
     } catch (error) {
-        console.log(error);
+        console.log(error.message);
     }
 }
 

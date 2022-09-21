@@ -1,30 +1,37 @@
 import { Sequelize } from "sequelize";
 import db from "../config/Database.js";
+import User from './UserModel.js';
+import UserKard from './User_kardModel.js';
 
 const { DataTypes } = Sequelize;
 
-const Kards = db.define('totokard',{
+const Kard = db.define('kard',{
     nom:{
-        type: DataTypes.STRING
+        type: DataTypes.STRING(190),
+        allowNull: false,
     },
     rare:{
-        type: DataTypes.STRING
+        type: DataTypes.STRING(190),
+        allowNull: false,
     },
     valeur:{
-        type: DataTypes.STRING
+        type: DataTypes.INTEGER(11),
+        allowNull: false,
     },
     image:{
-        type: DataTypes.STRING
+        type: DataTypes.STRING(190),
+        allowNull: false,
     },
-    price:{
-        type: DataTypes.STRING
-    }
+},{ 
+    timestamps: false 
 },{
     freezeTableName:true
 });
 
-(async () => {
-    await db.sync();
-})();
+Kard.belongsToMany(User, { through: UserKard });
 
-export default Kards;
+// (async () => {
+//     await db.sync();
+// })();
+
+export default Kard;

@@ -82,8 +82,42 @@ const User = db.define('user',{
     freezeTableName:true
 });
 
+const Kard = db.define('kard',{
+    nom:{
+        type: DataTypes.STRING(190),
+        allowNull: false,
+    },
+    rare:{
+        type: DataTypes.STRING(190),
+        allowNull: false,
+    },
+    valeur:{
+        type: DataTypes.INTEGER(11),
+        allowNull: false,
+    },
+    image:{
+        type: DataTypes.STRING(190),
+        allowNull: false,
+    },
+},{ 
+    timestamps: false 
+},{
+    freezeTableName:true
+});
+
+const UserKard = db.define('user_kard',
+{},
+{
+    timestamps: false
+});
+
+User.belongsToMany(Kard, { through: UserKard });
+Kard.belongsToMany(User, { through: UserKard });
+
 (async () => {
-    await db.sync();
+    await User.sync();
+    await Kard.sync();
+    await UserKard.sync();
 })();
 
 export default User;
