@@ -1,5 +1,7 @@
 import { Sequelize } from "sequelize";
 import db from "../config/Database.js";
+import Kard from "./KardModel.js";
+import UserKard from "./User_kardModel.js";
 
 const { DataTypes } = Sequelize;
 
@@ -82,37 +84,19 @@ const User = db.define('user',{
     freezeTableName:true
 });
 
-const Kard = db.define('kard',{
-    nom:{
-        type: DataTypes.STRING(190),
-        allowNull: false,
-    },
-    rare:{
-        type: DataTypes.STRING(190),
-        allowNull: false,
-    },
-    valeur:{
-        type: DataTypes.INTEGER(11),
-        allowNull: false,
-    },
-    image:{
-        type: DataTypes.STRING(190),
-        allowNull: false,
-    },
-},{ 
-    timestamps: false 
-},{
-    freezeTableName:true
+// User.belongsToMany(Kard, { through: UserKard });
+// Kard.belongsToMany(User, { through: UserKard });
+User.hasMany(UserKard, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
 });
+UserKard.belongsTo(User);
 
-const UserKard = db.define('user_kard',
-{},
-{
-    timestamps: false
+Kard.hasMany(UserKard, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
 });
-
-User.belongsToMany(Kard, { through: UserKard });
-Kard.belongsToMany(User, { through: UserKard });
+UserKard.belongsTo(Kard);
 
 (async () => {
     await User.sync();

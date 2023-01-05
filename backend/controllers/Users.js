@@ -1,4 +1,6 @@
 import User from "../models/UserModel.js";
+import UserKard from "../models/User_kardModel.js";
+import Kard from "../models/KardModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -18,6 +20,12 @@ export const getUserById = async(req, res) => {
         const user = await User.findOne({
             where:{
                 id: req.params.id
+            },
+            include: { 
+                model: UserKard,
+                include: {
+                    model: Kard
+                }
             }
         });
         res.status(200).json(user);
@@ -132,3 +140,4 @@ export const Logout = async(req, res) => {
     res.clearCookie('refreshToken');
     return res.sendStatus(200);
 }
+

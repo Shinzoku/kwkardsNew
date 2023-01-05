@@ -1,7 +1,5 @@
 import { Sequelize } from "sequelize";
 import db from "../config/Database.js";
-import User from './UserModel.js';
-import UserKard from './User_kardModel.js';
 
 const { DataTypes } = Sequelize;
 
@@ -23,15 +21,9 @@ const Kard = db.define('kard',{
         allowNull: false,
     },
 },{ 
-    timestamps: false 
+    timestamps: false
 },{
     freezeTableName:true
 });
-
-Kard.belongsToMany(User, { through: UserKard });
-
-// (async () => {
-//     await db.sync();
-// })();
 
 export default Kard;
